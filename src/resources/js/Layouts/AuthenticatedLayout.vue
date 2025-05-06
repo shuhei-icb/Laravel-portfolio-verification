@@ -1,107 +1,24 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import ApplicationLogo from "@/Components/ApplicationLogo.vue";
-import Dropdown from "@/Components/Dropdown.vue";
-import DropdownLink from "@/Components/DropdownLink.vue";
-import NavLink from "@/Components/NavLink.vue";
-import ResponsiveNavLink from "@/Components/ResponsiveNavLink.vue";
-import { Link } from "@inertiajs/vue3";
+import Header from "@/Components/organisms/Header.vue";
+import Sidebar from "@/Components/organisms/Sidebar.vue";
+import { usePage } from "@inertiajs/vue3";
 
-const showingNavigationDropdown = ref(false);
-
-const salesData = [
-  { name: '商品A', count: 10000 },
-  { name: '商品B', count: 5000 },
-  { name: '商品C', count: 100 }
-]
-
-const salesData2 = [
-  { date: '5月2日（金）', amount: 10000 },
-  { date: '5月1日（木）', amount: 5000 },
-  { date: '4月30日（水）', amount: 100 }
-]
-
-const salesData3 = [
-  { id: 1, status: '発送済', product: '商品A', quantity: 1, amount: 1000, date: '2025/4/30 00:00' },
-  { id: 2, status: '発送済', product: '商品A', quantity: 1, amount: 1000, date: '2025/4/30 00:00' },
-  { id: 3, status: '発送済', product: '商品A', quantity: 1, amount: 1000, date: '2025/4/30 00:00' }
-]
+const page = usePage();
+const user = page.props.auth?.user;
 </script>
 
 <template>
-	<!-- Page Content -->
-	<main>
-		<slot />
-		<div class="row mt-5">
-			<div class="col-md-6 px-5">
-				<div class="card shadow">
-					<div class="card-header">売上ランキング</div>
-					<div class="card-body">
-						<div class="table-responsive">
-							<table class="table table-hover align-middle">
-								<tbody>
-									<tr v-for="(item, index) in salesData" :key="item.name">
-										<td>
-											<span class="badge bg-primary fs-6">{{ index + 1 }}</span>
-										</td>
-										<td>{{ item.name }}</td>
-										<td>{{ item.count.toLocaleString() }} 個</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="col-md-6 px-5">
-				<div class="card shadow">
-					<div class="card-header text-primary fw-bold">売上金額</div>
-					<div class="card-body">
-						<table class="table">
-							<tbody>
-								<tr v-for="(item, index) in salesData2" :key="item.date">
-									<td>{{ item.date }}</td>
-									<td>{{ item.amount.toLocaleString() }} 円</td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div>
-			</div>
+	<Header />
+	<div class="d-flex" style="height: calc(100vh - 56px)">
+		<Sidebar :user="user" />
+		<div
+			class="flex-grow-1 overflow-auto p-4"
+			style="background-color: #f8f9fc"
+		>
+			<!-- Page Content -->
+			<main>
+				<slot />
+			</main>
 		</div>
-		<div class="row">
-			<div class="col-md-12 px-5 mt-5">
-				<div class="card shadow">
-					<div class="card-header">注文履歴</div>
-					<div class="card-body">
-						<div class="table-responsive">
-							<table class="table table-hover align-middle">
-								<thead class="table-light">
-									<tr>
-										<th scope="col">id</th>
-										<th scope="col">ステータス</th>
-										<th scope="col">商品</th>
-										<th scope="col">個数</th>
-										<th scope="col">金額</th>
-										<th scope="col">購入日時</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr v-for="(item, index) in salesData3" :key="item.id">
-										<td>{{ item.id }}</td>
-										<td><span class="badge bg-success">{{ item.status }}</span></td>
-										<td>{{ item.product }}</td>
-										<td>{{ item.quantity }}</td>
-										<td>{{ item.amount }}</td>
-										<td>{{ item.date }}</td>
-									</tr>
-								</tbody>
-							</table>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</main> 
+	</div>
 </template>
