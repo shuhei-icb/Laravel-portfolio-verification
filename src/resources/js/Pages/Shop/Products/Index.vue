@@ -57,7 +57,15 @@ const columns = [
 						:pagination-options="{ enabled: true, perPage: 10 }"
 					>
 						<template #table-row="props">
-							<span v-if="props.column.field === 'price'">
+							<span v-if="props.column.field === 'name'">
+								<Link
+									:href="`/shop/products/${props.row.id}`"
+									class="text-decoration-none"
+								>
+									{{ props.row.name }}
+								</Link>
+							</span>
+							<span v-else-if="props.column.field === 'price'">
 								{{ formatPrice(props.row.price) }}
 							</span>
 							<span v-else-if="props.column.field === 'edit'">

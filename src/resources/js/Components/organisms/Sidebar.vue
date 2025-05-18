@@ -18,7 +18,7 @@ import { ref, watchEffect } from 'vue';
 </script>
 
 <template>
-  <div class="d-flex flex-column" style="width: 250px;">
+  <div class="d-flex flex-column" style="min-width: 250px;">
     <div class="flex-grow-1 overflow-auto p-3">
       <ul class="nav nav-pills flex-column">
         <li class="nav-item">

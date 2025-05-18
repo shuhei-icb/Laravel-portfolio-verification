@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use \App\Http\Controllers\Shop\ProductController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -26,6 +27,8 @@ Route::middleware('auth')->group(function () {
 
 Route::prefix('shop')->name('shop.')->middleware(['auth:shop'])->group(function () {
 	Route::resource('products', \App\Http\Controllers\Shop\ProductController::class);
+	Route::post('/products/{product}', [ProductController::class, 'update'])->name('products.update');
 });
+
 
 require __DIR__ . '/auth.php';
