@@ -15,7 +15,7 @@ const form = useForm({
 const imageData = ref([]);
 
 const addImageField = () => {
-	imageData.value.push({
+	imageData.value.push({	
 		file: null,
 		caption: "",
 		sortOrder: imageData.value.length,

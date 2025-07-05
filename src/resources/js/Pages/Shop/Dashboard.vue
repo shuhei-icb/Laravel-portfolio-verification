@@ -1,9 +1,5 @@
 <script setup lang="ts">
-import { Head, usePage } from "@inertiajs/vue3";
-import { computed } from "vue";
-
-const page = usePage();
-const message = computed(() => page.props.flash?.message);
+import { Head } from "@inertiajs/vue3";
 
 const salesData = [
 	{ name: "商品A", count: 10000 },
@@ -48,8 +44,8 @@ const salesData3 = [
 <template>
 	<Head title="Shop | Dashboard" />
 	<div class="container-fluid p-0">
-		<div v-if="message" class="alert alert-success my-3 text-center">
-			{{ message }}
+		<div v-if="$page.props.flash.message" class="alert alert-success my-3 text-center">
+			{{ $page.props.flash.message }}
 		</div>
 		<div class="row mt-5">
 			<div class="col-md-6 px-5">

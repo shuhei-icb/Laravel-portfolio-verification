@@ -1,26 +1,24 @@
 <script setup lang="ts">
-import ApplicationLogo from "@/Components/ApplicationLogo.vue";
-import { Link } from "@inertiajs/vue3";
+import Header from "@/Components/organisms/Header.vue";
+import Footer from "@/Components/organisms/Footer.vue";
+import { usePage } from "@inertiajs/vue3";
 
-defineOptions({
-  layout: null, 
-});
+const page = usePage();
+const user = page.props.auth?.user;
 </script>
 
 <template>
-	<div class="container">
-		<div class="col-md-6 offset-md-3 mt-5">
-			<div class="text-center">
-				<Link href="/">
-					<ApplicationLogo class="h-25 w-25" />
-				</Link>
-			</div>
-			<div class="card">
-				<div class="card-body">
-					<slot />
-				</div>
-			</div>
+	<Header />
+	<div class="d-flex" style="height: calc(100vh - 56px)">
+		<div
+			class="flex-grow-1 overflow-auto p-4"
+			style="background-color: #f8f9fc"
+		>
+			<!-- Page Content -->
+			<main>
+				<slot />
+			</main>
 		</div>
 	</div>
-	
+	<Footer />
 </template>
