@@ -1,115 +1,146 @@
 <script setup lang="ts">
-import GuestLayout from '@/Layouts/GuestLayout.vue';
-import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { useForm } from "@inertiajs/vue3";
+import { ref } from "vue";
 
 const form = useForm({
-    name: '',
-    email: '',
-    password: '',
-    password_confirmation: '',
+	name: "",
+	email: "",
+	password: "",
+	password_confirmation: "",
+	zip: "",
+	prefecture: "",
+	city: "",
+	address: "",
 });
 
-const submit = () => {
-    form.post(route('register'), {
-        onFinish: () => {
-            form.reset('password', 'password_confirmation');
-        },
-    });
+const fetchAddress = async () => {
+	if (!form.zip || form.zip.length < 7) return;
+
+	try {
+		const response = await fetch(
+			`https://zipcloud.ibsnet.co.jp/api/search?zipcode=${form.zip}`
+		);
+		const data = await response.json();
+
+		if (data.results && data.results.length > 0) {
+			const result = data.results[0];
+			form.prefecture = result.address1;
+			form.city = result.address2 + result.address3;
+		}
+	} catch (error) {
+		console.error("住所の自動補完に失敗しました:", error);
+	}
 };
 </script>
 
 <template>
-    <GuestLayout>
-        <Head title="Register" />
+	<div class="container mt-5">
+		<h2 class="mb-4">新規ユーザー登録</h2>
 
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="name" value="Name" />
+		<form @submit.prevent="form.post(route('register'))">
+			<div class="mb-3">
+				<label for="name" class="form-label">名前</label>
+				<input
+					v-model="form.name"
+					type="text"
+					id="name"
+					class="form-control"
+					:class="{ 'is-invalid': form.errors.name }"
+				/>
+				<div class="invalid-feedback">{{ form.errors.name }}</div>
+			</div>
 
-                <TextInput
-                    id="name"
-                    type="text"
-                    class="mt-1 block w-full"
-                    v-model="form.name"
-                    required
-                    autofocus
-                    autocomplete="name"
-                />
+			<div class="mb-3">
+				<label for="email" class="form-label">メールアドレス</label>
+				<input
+					v-model="form.email"
+					type="email"
+					id="email"
+					class="form-control"
+					:class="{ 'is-invalid': form.errors.email }"
+				/>
+				<div class="invalid-feedback">{{ form.errors.email }}</div>
+			</div>
 
-                <InputError class="mt-2" :message="form.errors.name" />
-            </div>
+			<div class="mb-3">
+				<label for="zip" class="form-label">郵便番号</label>
+				<input
+					v-model="form.zip"
+					type="text"
+					id="zip"
+					class="form-control"
+					maxlength="7"
+					@keyup="fetchAddress"
+					:class="{ 'is-invalid': form.errors.zip }"
+				/>
+				<div class="invalid-feedback">{{ form.errors.zip }}</div>
+			</div>
 
-            <div class="mt-4">
-                <InputLabel for="email" value="Email" />
+			<div class="mb-3">
+				<label for="prefecture" class="form-label">都道府県</label>
+				<input
+					v-model="form.prefecture"
+					type="text"
+					id="prefecture"
+					class="form-control"
+					readonly
+				/>
+			</div>
 
-                <TextInput
-                    id="email"
-                    type="email"
-                    class="mt-1 block w-full"
-                    v-model="form.email"
-                    required
-                    autocomplete="username"
-                />
+			<div class="mb-3">
+				<label for="city" class="form-label">市区町村・町名</label>
+				<input
+					v-model="form.city"
+					type="text"
+					id="city"
+					class="form-control"
+					readonly
+				/>
+			</div>
 
-                <InputError class="mt-2" :message="form.errors.email" />
-            </div>
+			<div class="mb-3">
+				<label for="address" class="form-label">番地・建物名</label>
+				<input
+					v-model="form.address"
+					type="text"
+					id="address"
+					class="form-control"
+					:class="{ 'is-invalid': form.errors.address }"
+				/>
+				<div class="invalid-feedback">{{ form.errors.address }}</div>
+			</div>
 
-            <div class="mt-4">
-                <InputLabel for="password" value="Password" />
+			<div class="mb-3">
+				<label for="password" class="form-label">パスワード</label>
+				<input
+					v-model="form.password"
+					type="password"
+					id="password"
+					class="form-control"
+					:class="{ 'is-invalid': form.errors.password }"
+				/>
+				<div class="invalid-feedback">{{ form.errors.password }}</div>
+			</div>
 
-                <TextInput
-                    id="password"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="form.password"
-                    required
-                    autocomplete="new-password"
-                />
+			<div class="mb-3">
+				<label for="password_confirmation" class="form-label"
+					>パスワード確認</label
+				>
+				<input
+					v-model="form.password_confirmation"
+					type="password"
+					id="password_confirmation"
+					class="form-control"
+					:class="{ 'is-invalid': form.errors.password_confirmation }"
+				/>
+				<div class="invalid-feedback">
+					{{ form.errors.password_confirmation }}
+				</div>
+			</div>
 
-                <InputError class="mt-2" :message="form.errors.password" />
-            </div>
-
-            <div class="mt-4">
-                <InputLabel
-                    for="password_confirmation"
-                    value="Confirm Password"
-                />
-
-                <TextInput
-                    id="password_confirmation"
-                    type="password"
-                    class="mt-1 block w-full"
-                    v-model="form.password_confirmation"
-                    required
-                    autocomplete="new-password"
-                />
-
-                <InputError
-                    class="mt-2"
-                    :message="form.errors.password_confirmation"
-                />
-            </div>
-
-            <div class="mt-4 flex items-center justify-end">
-                <Link
-                    :href="route('login')"
-                    class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                >
-                    Already registered?
-                </Link>
-
-                <PrimaryButton
-                    class="ms-4"
-                    :class="{ 'opacity-25': form.processing }"
-                    :disabled="form.processing"
-                >
-                    Register
-                </PrimaryButton>
-            </div>
-        </form>
-    </GuestLayout>
+			<button type="submit" class="btn btn-primary" :disabled="form.processing">
+				登録
+			</button>
+		</form>
+	</div>
 </template>

@@ -9,11 +9,13 @@ use Inertia\Inertia;
 
 class ShopAuthenticatedSessionController extends Controller
 {
-	public function create() {
+	public function create()
+	{
 		return Inertia::render('Shop/Auth/Login');
 	}
 
-	public function store(Request $request) {
+	public function store(Request $request)
+	{
 		$credentials = $request->validate([
 			'email' => ['required', 'email'],
 			'password' => ['required'],
@@ -21,8 +23,9 @@ class ShopAuthenticatedSessionController extends Controller
 
 		if (Auth::guard('shop')->attempt($credentials)) {
 			$request->session()->regenerate();
-			return redirect()->intended('/shop/dashboard')
-				->with('message', 'ログインしました');
+			$request->session()->flash('message', 'ログインしました');
+
+			return Inertia::location('/shop/dashboard');
 		}
 
 		return back()->withErrors([
@@ -30,11 +33,12 @@ class ShopAuthenticatedSessionController extends Controller
 		]);
 	}
 
-	public function destroy(Request $request) {
+	public function destroy(Request $request)
+	{
 		Auth::guard('shop')->logout();
 		$request->session()->invalidate();
 		$request->session()->regenerateToken();
 
-		return redirect('/shop/login');
+		return Inertia::location('/shop/login');
 	}
 }

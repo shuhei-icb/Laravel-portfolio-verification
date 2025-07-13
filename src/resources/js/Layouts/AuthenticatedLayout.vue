@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Header from "@/Components/organisms/Header.vue";
+import ShopHeader from "@/Components/organisms/ShopHeader.vue";
 import Sidebar from "@/Components/organisms/Sidebar.vue";
 import { usePage } from "@inertiajs/vue3";
 
@@ -8,9 +8,9 @@ const user = page.props.auth?.user;
 </script>
 
 <template>
-	<Header />
+	<ShopHeader />
 	<div class="d-flex" style="height: calc(100vh - 56px)">
-		<Sidebar :user="user" />
+		<Sidebar v-if="user" :user="user" />
 		<div
 			class="flex-grow-1 overflow-auto p-4"
 			style="background-color: #f8f9fc"
